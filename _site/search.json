@@ -7,6 +7,13 @@
     "text": "This is a template example for lab journaling. Students in the data science courses at the Institute of Entrepreneurship will use this template to learn R for business analytics. Students can replace this text as they wish."
   },
   {
+    "objectID": "index.html#first-test-codefunction",
+    "href": "index.html#first-test-codefunction",
+    "title": "My Lab Journal",
+    "section": "First Test Code/Function",
+    "text": "First Test Code/Function\nroll3 &lt;- function(faces = 1:6, number_of_dice = 1) {\ndice &lt;- sample(x = faces, size = number_of_dice,\n             replace = TRUE, \n             \n             \n             prob = c(0.1, 0.1, 0.1, 0.1, 0.1, 0.5))\n             \n             \nsum(dice)\n}"
+  },
+  {
     "objectID": "index.html#how-to-use",
     "href": "index.html#how-to-use",
     "title": "My Lab Journal",
@@ -58,16 +65,30 @@
   {
     "objectID": "content/01_journal/01_tidyverse.html",
     "href": "content/01_journal/01_tidyverse.html",
-    "title": "Tidyverse",
+    "title": "01 Tidyverse",
     "section": "",
-    "text": "Note\n\n\n\nYou can delete everything in here and start fresh.\nThis is a .qmd file. It is plain text with special features. Any time you write just like this, it will be compiled to normal text in the website. If you put a # in front of your text, it will create a top level-header.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "Last compiled: 2024-04-22\nI learned the basics of the tidyverse library throughout the chapter. This includes basic data wrangling and data visualization."
+  },
+  {
+    "objectID": "content/01_journal/01_tidyverse.html#sales-by-state",
+    "href": "content/01_journal/01_tidyverse.html#sales-by-state",
+    "title": "01 Tidyverse",
+    "section": "\n2.1 Sales by State",
+    "text": "2.1 Sales by State\n\n# Data Science at TUHH ------------------------------------------------------\n# SALES ANALYSIS ----\n\n# 1.0 Load libraries ----\nlibrary(tidyverse)\n\n#&gt; ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n#&gt; ✔ dplyr     1.1.4     ✔ readr     2.1.5\n#&gt; ✔ forcats   1.0.0     ✔ stringr   1.5.1\n#&gt; ✔ ggplot2   3.5.0     ✔ tibble    3.2.1\n#&gt; ✔ lubridate 1.9.3     ✔ tidyr     1.3.1\n#&gt; ✔ purrr     1.0.2     \n#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n#&gt; ✖ dplyr::filter() masks stats::filter()\n#&gt; ✖ dplyr::lag()    masks stats::lag()\n#&gt; ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(readxl)\n\n# 2.0 Importing Files ----\nbike_orderlines_wrangled_tbl &lt;- read_rds(\"01_tidyverse_files/bike_orderlines.rds\")\n\n# 3.0 Examining Data ----\n#bike_orderlines_wrangled_tbl %&gt;%\n#head(bike_orderlines_wrangled_tbl, n=7)\n\n# 4.0 Wrangling Data ----\nbike_orderlines_wrangled_tbl &lt;- bike_orderlines_wrangled_tbl %&gt;%\n  separate(col = location,\n           into = c(\"city\", \"state\"),\n           sep = \", \")\n\n# 5.0 Business insight ----\n#5.1 Challenge No. 1 - Sales by State ----\n\n#Step 1 - Manipulate----\nsales_by_state &lt;- bike_orderlines_wrangled_tbl %&gt;%\n  select(state, total_price) %&gt;%\n  group_by(state) %&gt;%\n  summarize(sales = sum(total_price))\nsales_by_state %&gt;% head(n=10)\n\n\n\n  \n\n\n#Step 2 - Visulaize----\nplot_1 &lt;- sales_by_state %&gt;%\n  ggplot(aes(x = state, y = sales),)+\n  geom_col(fill = \"blue\")+\n  theme(axis.text.x = element_text(angle = 45, hjust = 1))+\n  labs(title = \"Sales By State\")+\n  labs(y = \"Sales\")+labs(x = \"States\")+\n  theme(plot.title = element_text(size = 34))+\n  theme(axis.title.x = element_text(size = 28))+\n  theme(axis.title.y = element_text(size = 28))+\n  theme(axis.text.y = element_text(size = 14))+\n  theme(axis.text.x = element_text(size = 14))+\n  theme(text = element_text(family = \"Times New Roman\"))+\n  theme(axis.title = element_text(face=\"bold\"))+\n  theme(axis.text = element_text(face=\"bold\"))+\n  theme(plot.title = element_text(face=\"bold\"))+\n  theme(axis.title.x=element_text(colour=\"black\"))+\n  theme(axis.title.y=element_text(colour=\"black\"))+\n  theme(axis.text.x=element_text(colour=\"black\"))+\n  theme(axis.text.y=element_text(colour=\"black\"))+\n  theme(plot.title=element_text(hjust=0.5))\n\nplot_1\n\n\n\n\n\n\nggsave(\"01_tidyverse_files/figure-html/sales_by_state.png\", height = 7 , width = 12)\n\nAccording to above figure, North Rhine-Westphalia has the largest revenue."
+  },
+  {
+    "objectID": "content/01_journal/01_tidyverse.html#sales-by-state-by-year",
+    "href": "content/01_journal/01_tidyverse.html#sales-by-state-by-year",
+    "title": "01 Tidyverse",
+    "section": "\n3.1 Sales by State by Year",
+    "text": "3.1 Sales by State by Year\n\n# 5.2 Challenge No. 2 - sales by location and year (facet_wrap) ----\n\n#Step 1 - Manipulate----\nsales_by_state_by_year &lt;- bike_orderlines_wrangled_tbl %&gt;%\n  select(state, total_price, order_date) %&gt;%\n  mutate(year = year(order_date)) %&gt;%\n  group_by(year) %&gt;%\n  summarize(sales = sum(total_price), state = state)\n\n#&gt; Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in\n#&gt; dplyr 1.1.0.\n#&gt; ℹ Please use `reframe()` instead.\n#&gt; ℹ When switching from `summarise()` to `reframe()`, remember that `reframe()`\n#&gt;   always returns an ungrouped data frame and adjust accordingly.\n\n\n#&gt; `summarise()` has grouped output by 'year'. You can override using the\n#&gt; `.groups` argument.\n\nsales_by_state_by_year %&gt;% head(n=5)\n\n\n\n  \n\n\n#Step 2 - Visulaize----\nplot_2 &lt;- sales_by_state_by_year %&gt;%\n  ggplot(aes(x = year, y = sales, fill = state)) +\n  facet_wrap(~state) +\n  geom_col(fill = \"chocolate2\") +\n  theme(axis.text.x = element_text(angle = 45, hjust = 1))+\n  labs(title = \"Sales By Location and Year\")+\n  labs(x = \"Year\")+\n  labs(y = \"Sales\")+\n  theme(plot.title = element_text(size = 34))+\n  theme(axis.title.x = element_text(size = 28))+\n  theme(axis.title.y = element_text(size = 28))+\n  theme(axis.text.y = element_text(size = 14))+\n  theme(axis.text.x = element_text(size = 14))+\n  theme(text = element_text(family = \"Times New Roman\"))+\n  theme(axis.title = element_text(face=\"bold\"))+\n  theme(axis.text = element_text(face=\"bold\"))+\n  theme(plot.title = element_text(face=\"bold\"))+\n  theme(axis.title.x=element_text(colour=\"black\"))+\n  theme(axis.title.y=element_text(colour=\"black\"))+\n  theme(axis.text.x=element_text(colour=\"black\"))+\n  theme(axis.text.y=element_text(colour=\"black\"))+\n  theme(plot.title=element_text(hjust=0.5))+\n  theme(strip.text = element_text(size = 14, color = \"black\"))+\n  theme(strip.text = element_text(face = \"bold\"))\nplot_2\n\n\n\n\n\n\nggsave(\"01_tidyverse_files/figure-html/Sales_by_State_und_Location.png\", height = 8 , width = 15)\n\n\n\n\n\n\n\nNote\n\n\n\nYou can delete everything in here and start fresh.\n\n\nThis is a .qmd file. It is plain text with special features. Any time you write just like this, it will be compiled to normal text in the website. If you put a # in front of your text, it will create a top level-header.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
   },
   {
     "objectID": "content/01_journal/01_tidyverse.html#header-2",
     "href": "content/01_journal/01_tidyverse.html#header-2",
-    "title": "Tidyverse",
-    "section": "2.1 Header 2",
-    "text": "2.1 Header 2\n\nHeader 3\n\nHeader 4\n\nHeader 5\n\nHeader 6"
+    "title": "01 Tidyverse",
+    "section": "\n5.1 Header 2",
+    "text": "5.1 Header 2\nHeader 3\nHeader 4\nHeader 5\nHeader 6"
   },
   {
     "objectID": "content/02_notes/05_class_notes.html",

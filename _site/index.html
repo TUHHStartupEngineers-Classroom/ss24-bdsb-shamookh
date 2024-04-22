@@ -168,6 +168,22 @@ ul.task-list li input[type="checkbox"] {
 </figure>
 </div>
 <p>This is a template example for lab journaling. Students in the data science courses at the Institute of Entrepreneurship will use this template to learn R for business analytics. Students can replace this text as they wish.</p>
+<section id="first-test-codefunction" class="level2">
+<h2 class="anchored" data-anchor-id="first-test-codefunction">First Test Code/Function</h2>
+<p>roll3 &lt;- function(faces = 1:6, number_of_dice = 1) {</p>
+<p>dice &lt;- sample(x = faces, size = number_of_dice,</p>
+<pre><code>             replace = TRUE, 
+             
+             
+             prob = c(0.1, 0.1, 0.1, 0.1, 0.1, 0.5))
+             
+             </code></pre>
+<p>sum(dice)</p>
+<p>}</p>
+</section>
+<section id="you-can-run-the-function-100-times-store-the-results-and-plot-a-histogram-to-varify-your-function" class="level1">
+<h1>You can run the function 100 times, store the results and plot a histogram to varify your function</h1>
+<p>results &lt;- replicate(n = 200, expr = roll3(), simplify=TRUE) hist(results)</p>
 <section id="how-to-use" class="level2">
 <h2 class="anchored" data-anchor-id="how-to-use">How to use</h2>
 <ol type="1">
@@ -179,6 +195,7 @@ ul.task-list li input[type="checkbox"] {
 </ol>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -531,7 +548,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","loop":true,"selector":".lightbox","descPosition":"bottom","openEffect":"zoom"});</script>
+<script>var lightboxQuarto = GLightbox({"selector":".lightbox","descPosition":"bottom","loop":true,"openEffect":"zoom","closeEffect":"zoom"});</script>
 
 
 

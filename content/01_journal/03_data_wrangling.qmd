@@ -1,7 +1,7 @@
 ---
 title: "Data Wrangling"
 author: "Muhammad Shamookh"
-date: "2021-04"
+date: "2024-05"
 output:
   html_document:
     toc: true
@@ -94,7 +94,7 @@ Challange_1
 Table 1: The 50 companies with the most patents(descending order).
 
 
-# Challange No. 2
+# Challenge No. 02
 ## Recent Patent Activity (2014 Aug)
 
 
@@ -115,7 +115,7 @@ Challange_2
 Table 2: Top 10 US companies with the most new granted patents in 2014 Aug.
 
 
-# Challange No. 3
+# Challenge No. 03
 ## Innovation in Tech
 
 

@@ -1,7 +1,7 @@
 ---
-title: "Data Visualization"
+title: "Data Acquistion"
 author: "Muhammad Shamookh"
-date: "2024-04-21"
+date: "2024-05"
 output:
   html_document:
     toc: true
@@ -17,7 +17,7 @@ output:
 
 Last compiled: `r Sys.Date()`
 
-# Challange Nr. 1
+# Challenge No. 01
 The Spotify Web API provides access to various endpoints to retrieve data related to music tracks, artists, albums, playlists, and user profiles. The top 5 most popular tracks on Spotify are retreived.
 
 ## Spotify API
@@ -79,7 +79,7 @@ kable(track_info, format = "markdown")
  1: Top 5 track and singer names.
 
 
-# Challange Nr. 2
+# Challenge No. 02
 Web scraping is a technique used to extract data from websites. In this example, we will scrape the mountain bikes listed on the Rose Bikes website <https://www.rosebikes.com/bikes/mtb>. The goal is to extract information such as the bike name, price, and other relevant details.
 
 ## Rosebike

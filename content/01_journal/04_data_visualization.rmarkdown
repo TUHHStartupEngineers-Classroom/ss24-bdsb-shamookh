@@ -13,6 +13,7 @@ output:
     code_folding: hide
 ---
 
+
 # Data Visualization
 
 Last compiled: `r Sys.Date()`
@@ -24,6 +25,7 @@ I learned a lot about the themes in this part.
 Total covid cases data was plotted against time. 
 
 ## Total covid cases - Time
+
 
 ```{r}
 library(tidyverse)
@@ -106,11 +108,13 @@ ggplot(covid_data_tbl_selected, aes(x = date, y = total_cases)) +
   guides(color=guide_legend(nrow=2, byrow=TRUE)) 
 
 ```
+
 # Challenge No. 2
 
 Case-fatality rate in every countries plotted on a map.
 
 ## World case-fatality rate
+
 
 ```{r}
 # Load required libraries
@@ -166,11 +170,4 @@ ggplot() +
     legend.title = element_text(color = "#aaaaaa", hjust = 0.5, vjust = 0.5)  # Light text color for legend title
   )
 ```
-
-
-
-
-
-
-
 

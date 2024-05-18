@@ -17,12 +17,12 @@ output:
 
 Last compiled: `r Sys.Date()`
 
-I had to use the reduced data, because my computer coudn't load the original patent data.
+I had to use the reduced data, because my computer could not load the original patent data.
 
 # Challenge No. 01
 ## Patent Dominance
 
-Table 1: The 50 companies with the most patents(descending order).
+
 ```{r}
 # 01 Load libraries ----
 
@@ -91,10 +91,13 @@ Challange_1 <- US_top_10$organization %>%
   head(n=50)
 Challange_1
 ```
-# Challange Nr. 2
+Table 1: The 50 companies with the most patents(descending order).
+
+
+# Challange No. 2
 ## Recent Patent Activity (2014 Aug)
 
-Table 2: Top 10 US companies with the most new granted patents in 2014 Aug.
+
 ```{r}
 S_2014_05 <- patent_tbl %>%
   filter(date >= "2014-05-01" & date < "2014-06-01") %>%
@@ -109,7 +112,10 @@ Challange_2 <-S_2014_05$organization %>%
   head(n=10)
 Challange_2
 ```
-# Challange Nr. 3
+Table 2: Top 10 US companies with the most new granted patents in 2014 Aug.
+
+
+# Challange No. 3
 ## Innovation in Tech
 
 
@@ -125,7 +131,8 @@ Challange_3 <- Top_mainclasses$mainclass_id %>%
   head(n=5)
 Challange_3
 ```
-The above table shows top 5 USPTO mainclasses for the worlds top ten companies.(descending order)
+Table 3: Top 5 USPTO mainclasses for the worlds top ten companies.(descending order)
+
 
 
 

@@ -1,90 +1,6 @@
----
-title: "Data Visualization"
-author: "Muhammad Shamookh"
-date: "2024-04-21"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    df_print: paged
-    collapsed: false
-    number_sections: true
-    toc_depth: 3
-    code_folding: hide
----
-
-# Data Acquisition
-
-Last compiled: `r Sys.Date()`
-
-# Challange Nr. 1
-The Spotify Web API provides access to various endpoints to retrieve data related to music tracks, artists, albums, playlists, and user profiles. The top 5 most popular tracks on Spotify are retreived.
-
-## Spotify API
-```{r}
-# Load required libraries
-library(httr)
-library(jsonlite)
-library(tidyverse)
-
-# Replace with your actual OAuth token
-token <- 'BQBcTINcgYgaqH7etCs9vm5X2nKxc2zADfqQbwAP2tnmljk7XthJfaaqKDw4rWFN6cspyISpo7JyQiGIvETRqZ-szLLhyOGp--e_gnzER5RthEDfjtNAUedH8Vf0F8YuEKXCE5wXmfzfXnrItCrxzZIR29-pGlbyPBZHrHsJq1LPAEkUemWZ95ABVoCYlGWTd10EqzocX8zAwcIhtWIrvVDHX4-3SRBMjO-O4QiBMF94f42TSPKp068At2-MuZ0c7SMvbWBaeO3g-0Wt8qT4rvSgPyyn'
-
-# Function to make API request
-fetch_web_api <- function(endpoint, method = "GET", body = NULL) {
-  url <- paste0("https://api.spotify.com/", endpoint)
-  
-  res <- httr::VERB(
-    method,
-    url,
-    add_headers(Authorization = paste("Bearer", token)),
-    body = body,
-    encode = "json"
-  )
-  
-  if (status_code(res) == 200) {
-    return(content(res, as = "parsed", type = "application/json"))
-  } else {
-    stop("API request failed with status code: ", status_code(res))
-  }
-}
-
-# Function to get top tracks
-get_top_tracks <- function() {
-  endpoint <- "v1/me/top/tracks?time_range=long_term&limit=5"
-  response <- fetch_web_api(endpoint)
-  return(response$items)
-}
-
-# Get top tracks
-top_tracks <- get_top_tracks()
-
-# Process and print the data in a readable format
-track_info <- top_tracks %>%
-  map_df(~ data.frame(
-    track_name = .x$name,
-    artist_names = paste(map_chr(.x$artists, "name"), collapse = ", "),
-    stringsAsFactors = FALSE
-  ))
-
-print(track_info)
-
-# Display as a table
-library(knitr)
-kable(track_info, format = "markdown")
-
-
-
-```
- 1: Top 5 track and singer names.
-
-
-# Challange Nr. 2
-Web scraping is a technique used to extract data from websites. In this example, we will scrape the mountain bikes listed on the Rose Bikes website <https://www.rosebikes.com/bikes/mtb>. The goal is to extract information such as the bike name, price, and other relevant details.
 
 ## Rosebike
 
-```{r}
 library(tidyverse) # Main Package - Loads dplyr, purrr, etc.
 library(rvest)     # HTML Hacking & Web Scraping
 library(xopen)     # Quickly opening URLs
@@ -173,7 +89,6 @@ extract_models_from_category_list_mtb <- function(bike_url){
 }
 
 
-
 home_url <- "https://www.rosebikes.com/bikes"
 
 html_home <- read_html(home_url)
@@ -184,16 +99,5 @@ html_categories_urls <- html_home %>%
 
 
 tbl <- html_categories_urls[[1]] %>%
-  extract_models_from_category_list_mtb
+ extract_models_from_category_list_mtb
 tbl 
-```
-Table 2: Model names and Model prices (Prices are in Euro)
-
-
-
-
-
-
-
-
-

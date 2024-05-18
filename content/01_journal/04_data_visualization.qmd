@@ -1,8 +1,216 @@
 ---
 title: "Data Visualization"
-author: "Joschka Schwarz"
+author: "Muhammad Shamookh"
+date: "2024-05"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    df_print: paged
+    collapsed: false
+    number_sections: true
+    toc_depth: 3
+    code_folding: hide
 ---
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
+# Data Visualization
+
+Last compiled: `r Sys.Date()`
+
+I learned a lot about the themes in this part.
+
+# Challenge No. 01
+
+Total covid cases data was plotted against time. 
+
+## Total covid cases - Time
+
+```{r}
+# Load required libraries
+library(tidyverse)
+library(ggrepel)
+
+# Load and preview the data
+covid_data_tbl <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv")
+covid_data_tbl %>%
+  head(n=5)
+
+# Define places to filter
+places <- c('Germany', 'France', 'Spain', 'United Kingdom', 'United States')
+
+# Filter the data for selected places
+covid_data_tbl_selected <- covid_data_tbl %>%
+  filter(location %in% places)
+
+# Get the range of dates
+last_date <- max(covid_data_tbl$date)
+first_date <- min(covid_data_tbl$date)
+
+# Get the latest total cases for the US
+US_covid_data_tbl <- covid_data_tbl %>%
+  filter(location == "United States")
+
+us_last_record <- US_covid_data_tbl %>%
+  filter(date == max(date))
+
+us_last_case <- us_last_record$total_cases
+us_last_date <- us_last_record$date
+
+# Get the latest total cases for Germany
+Germany_covid_data_tbl <- covid_data_tbl %>%
+  filter(location == "Germany")
+
+germany_last_record <- Germany_covid_data_tbl %>%
+  filter(date == max(date))
+
+germany_last_case <- germany_last_record$total_cases
+germany_last_date <- germany_last_record$date
+
+# Plot
+ggplot(covid_data_tbl_selected, aes(x = date, y = total_cases, color = location)) +
+  geom_line(size = 1.2) +
+  geom_label_repel(data = data.frame(date = us_last_date, total_cases = us_last_case, location = "United States"),
+                   aes(x = date, y = total_cases, label = paste("USA:", format(us_last_case, big.mark = ","))),
+                   fill = "purple", color = "white", nudge_y = 5000000, size = 3) +
+  geom_label_repel(data = data.frame(date = germany_last_date, total_cases = germany_last_case, location = "Germany"),
+                   aes(x = date, y = total_cases, label = paste("Germany:", format(germany_last_case, big.mark = ","))),
+                   fill = "blue", color = "white", nudge_y = 2000000, size = 3) +
+  labs(
+    subtitle = "As of 09/05/2024",
+    title = "COVID-19 confirmed cases worldwide",
+    x = "", 
+    y = "Cumulative Cases",
+    color = "Country"
+  ) +
+  theme(
+    plot.title = element_text(
+      color = "white",
+      size = 16,
+      face = "bold"
+    ),
+    plot.subtitle = element_text(
+      color = "white",
+      size = 12
+    ),
+    legend.position = "bottom",
+    legend.background = element_rect(
+      fill = "#222222",
+      color = "#aaaaaa"
+    ),
+    legend.text = element_text(
+      color = "#aaaaaa"
+    ),
+    legend.title = element_text(
+      color = "#aaaaaa",
+      hjust = 0.5,
+      vjust = 0.5
+    ),
+    axis.text.x = element_text(
+      angle = 45,
+      hjust = 1,
+      color = "#aaaaaa"
+    ),
+    axis.text.y = element_text(
+      color = "#aaaaaa"
+    ),
+    axis.title.y = element_text(
+      color = "white",
+      size = 13,
+      face = "bold"
+    ),
+    plot.background = element_rect(
+      fill = "#222222"
+    ),
+    panel.background = element_rect(
+      fill = "#222222"
+    ),
+    panel.grid = element_line(
+      color = "#888888"
+    ),
+    panel.grid.minor = element_blank(),
+    legend.key = element_rect(
+      fill = "#222222"
+    )
+  ) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%B '%y") +
+  scale_y_continuous(breaks = c(0, 25000000, 50000000, 75000000),
+                     labels = c("0", "25M", "50M", "75M")) +
+  scale_color_manual(values = c("Germany" = "red", 
+                                "France" = "blue", 
+                                "Spain" = "green", 
+                                "United Kingdom" = "orange", 
+                                "United States" = "purple"),
+                     name = "Country",
+                     labels = c("Germany", "France", "Spain", "United Kingdom", "United States")) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE))
+
+
+
+```
+
+# Challenge No. 02
+
+Case-fatality rate in every countries were plotted on a map.
+
+## World case-fatality rate
+
+```{r}
+library(tidyverse)
+library(maps)
+library(purrr)
+
+world <- map_data("world")
+covid_data_tbl <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv")
+latest_date <- covid_data_tbl$date %>% max()
+
+covid_data_tbl_plot <- covid_data_tbl %>%
+  select(location, total_cases, total_deaths, population) %>%
+  drop_na() %>%
+  group_by(location) %>%
+  summarise(total_cases = last(total_cases), 
+            total_deaths = last(total_deaths),
+            population = last(population),
+            mortality_rate = total_deaths / population,
+            case_fatality_rate = total_deaths / total_cases) 
+
+world_covid <- covid_data_tbl_plot %>%
+  mutate(location = case_when(
+    location == "United Kingdom" ~ "UK",
+    location == "United States" ~ "USA",
+    location == "Democratic Republic of Congo" ~ "Democratic Republic of the Congo",
+    TRUE ~ location
+  )) %>%
+  right_join(world, c("location" = "region")) 
+
+# Visualize mortality rate
+ggplot() +
+  geom_map(data = world_covid,
+           aes(x = long, y = lat, map_id = location, fill = mortality_rate),
+           col = "white",
+           map = world) +
+  scale_fill_gradient(low = "#aa7776", high = "#8b0000") +
+  theme(axis.title = element_blank(),
+        axis.text = element_blank(),
+        plot.background = element_rect(fill = "#222222"),
+        panel.background = element_rect(fill = "#222222"),
+        legend.background = element_rect(fill = "#222222", color = "#aaaaaa"),
+        legend.text = element_text(color = "#aaaaaa"),
+        legend.title = element_text(color = "#aaaaaa", hjust = 0.5, vjust = 0.5))
+
+# Visualize case-fatality rate
+ggplot() +
+  geom_map(data = world_covid,
+           aes(x = long, y = lat, map_id = location, fill = case_fatality_rate),
+           col = "white",
+           map = world) +
+  scale_fill_gradient(low = "#aa7776", high = "#8b0000") +
+  theme(axis.title = element_blank(),
+        axis.text = element_blank(),
+        plot.background = element_rect(fill = "#222222"),
+        panel.background = element_rect(fill = "#222222"),
+        legend.background = element_rect(fill = "#222222", color = "#aaaaaa"),
+        legend.text = element_text(color = "#aaaaaa"),
+        legend.title = element_text(color = "#aaaaaa", hjust = 0.5, vjust = 0.5))
+
+
+```

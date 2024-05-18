@@ -1,98 +1,137 @@
 ---
-title: "Tidyverse"
-author: "Joschka Schwarz"
+title: "01 Tidyverse"
+author: "Muhammad Shamookh"
+date: "2024-05"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    df_print: paged
+    collapsed: false
+    number_sections: true
+    toc_depth: 3
+    code_folding: hide
 ---
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
-
-This is a `.qmd` file. It is plain text with special features. Any time you write just like this, it will be compiled to normal text in the website. If you put a \# in front of your text, it will create a top level-header.
-
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
-
-# Text Formatting
-
-*italics* and **bold**
-
-superscript^2^ / subscript~2~
-
-~~strikethrough~~
-
-`verbatim code`
-
-> Blockquote
-
-# Headings
-
-## Header 2
-### Header 3
-#### Header 4
-##### Header 5
-###### Header 6
-
-# Links & Images
-
-<https://quarto.org>
-
-[Quarto](https://quarto.org)
-
-![Caption](../../assets/img/elephant.png)
-
-[![Caption](../../assets/img/elephant.png)](https://quarto.org)
-
-[![Caption](../../assets/img/elephant.png)](https://quarto.org "An elephant")
-
-
-# Lists
-
-* unordered list
-    + sub-item 1
-    + sub-item 2
-        - sub-sub-item 1
-        
-*   item 2
-
-    Continued (indent 4 spaces)
-    
-    
-1. ordered list
-2. item 2
-    i) sub-item 1
-         A.  sub-sub-item 1
-         
-(@)  A list whose numbering
-
-continues after
-
-(@)  an interruption
-
-# Tables
-
-| Right | Left | Default | Center |
-|------:|:-----|---------|:------:|
-|   12  |  12  |    12   |    12  |
-|  123  |  123 |   123   |   123  |
-|    1  |    1 |     1   |     1  |
-
-# Source Code
-
-Use ``` to delimit blocks of source code:
-
-```
-code
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
 ```
 
-Add a language to syntax highlight code blocks:
+# Tidyverse
+Last compiled: `r Sys.Date()`
+
+Throughout the chapter, I gained proficiency in the fundamental aspects of the tidyverse library, encompassing essential skills in both data wrangling and data visualization.
+
+# Challenge No. 01
+Utilizing the **'bike_orderlines_wrangled_tbl'** dataset and the acquired knowledge, I derived the 'state' and 'city' columns for grouping solely by the 'state' variable. Later, I visualized sales by states through a bar plot, to attain further insights into their relationship.
+
+## Sales by State
+```{r}
+# Data Science at TUHH ------------------------------------------------------
+# SALES ANALYSIS ----
+
+# 1.0 Load libraries ----
+library(tidyverse)
+library(readxl)
+
+# 2.0 Importing Files ----
+bike_orderlines_wrangled_tbl <- read_rds("01_tidyverse_files/bike_orderlines.rds")
+
+# 3.0 Examining Data ----
+#bike_orderlines_wrangled_tbl %>%
+#head(bike_orderlines_wrangled_tbl, n=7)
+
+# 4.0 Wrangling Data ----
+bike_orderlines_wrangled_tbl <- bike_orderlines_wrangled_tbl %>%
+  separate(col = location,
+           into = c("city", "state"),
+           sep = ", ")
+
+# 5.0 Business insight ----
+#5.1 Challenge No. 1 - Sales by State ----
+
+#Step 1 - Manipulate----
+sales_by_state <- bike_orderlines_wrangled_tbl %>%
+  select(state, total_price) %>%
+  group_by(state) %>%
+  summarize(sales = sum(total_price))
+sales_by_state %>% head(n=10)
+
+#Step 2 - Visulaize----
+plot_1 <- sales_by_state %>%
+  ggplot(aes(x = state, y = sales),)+
+  geom_col(fill = "blue")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  labs(title = "Sales By State")+
+  labs(y = "Sales")+labs(x = "States")+
+  theme(plot.title = element_text(size = 34))+
+  theme(axis.title.x = element_text(size = 28))+
+  theme(axis.title.y = element_text(size = 28))+
+  theme(axis.text.y = element_text(size = 14))+
+  theme(axis.text.x = element_text(size = 14))+
+  theme(text = element_text(family = "Times New Roman"))+
+  theme(axis.title = element_text(face="bold"))+
+  theme(axis.text = element_text(face="bold"))+
+  theme(plot.title = element_text(face="bold"))+
+  theme(axis.title.x=element_text(colour="black"))+
+  theme(axis.title.y=element_text(colour="black"))+
+  theme(axis.text.x=element_text(colour="black"))+
+  theme(axis.text.y=element_text(colour="black"))+
+  theme(plot.title=element_text(hjust=0.5))
+
+plot_1
+ggsave("01_tidyverse_files/figure-html/sales_by_state.png", height = 7 , width = 12)
+```
+
+**The above figure illustrates that North Rhine-Westphalia has the highest revenue among all states.**
+
+
+# Challenge No. 02
+
+By utilizing the **'bike_orderlines_wrangled_tbl'** dataframe, applying grouping based on the 'state' and 'year' column. Subsequently, then visualized the sales distribution across different states over the years, employing a bar plot with facets arranged by state using **'facet_wrap(~state)'**.
+
+
+## Sales by State by Year
 
 ```{r}
-1 + 1
+
+# 5.2 Challenge No. 2 - sales by location and year (facet_wrap) ----
+
+#Step 1 - Manipulate----
+sales_by_state_by_year <- bike_orderlines_wrangled_tbl %>%
+  select(state, total_price, order_date) %>%
+  mutate(year = year(order_date)) %>%
+  group_by(year) %>%
+  summarize(sales = sum(total_price), state = state)
+sales_by_state_by_year %>% head(n=5)
+
+
+#Step 2 - Visulaize----
+plot_2 <- sales_by_state_by_year %>%
+  ggplot(aes(x = year, y = sales, fill = state)) +
+  facet_wrap(~state) +
+  geom_col(fill = "chocolate2") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  labs(title = "Sales By Location and Year")+
+  labs(x = "Year")+
+  labs(y = "Sales")+
+  theme(plot.title = element_text(size = 34))+
+  theme(axis.title.x = element_text(size = 28))+
+  theme(axis.title.y = element_text(size = 28))+
+  theme(axis.text.y = element_text(size = 14))+
+  theme(axis.text.x = element_text(size = 14))+
+  theme(text = element_text(family = "Times New Roman"))+
+  theme(axis.title = element_text(face="bold"))+
+  theme(axis.text = element_text(face="bold"))+
+  theme(plot.title = element_text(face="bold"))+
+  theme(axis.title.x=element_text(colour="black"))+
+  theme(axis.title.y=element_text(colour="black"))+
+  theme(axis.text.x=element_text(colour="black"))+
+  theme(axis.text.y=element_text(colour="black"))+
+  theme(plot.title=element_text(hjust=0.5))+
+  theme(strip.text = element_text(size = 6, color = "black"))+
+  theme(strip.text = element_text(face = "bold"))
+plot_2
+ggsave("01_tidyverse_files/figure-html/Sales_by_State_und_Location.png", height = 15 , width = 20)
 ```
 
-```{r}
-cars
-```
-
-```{r}
-plot(cars)
-```
